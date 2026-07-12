@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 import { useGameStore } from '../store';
-import { getLocalizedPuzzle } from '../../content/puzzles';
+import { getLocalizedPuzzle, PUZZLES } from '../../content/puzzles';
 import { useTranslation } from '../../i18n';
 import { motion, AnimatePresence } from 'framer-motion';
 import { X, CheckCircle2, AlertCircle, Lightbulb } from 'lucide-react';
@@ -30,6 +30,8 @@ export function AlgebraPuzzle() {
   const canRevealMoreHints = hintCount < MAX_HINTS;
   // Slice of hint strings the player has earned so far
   const revealedHints = puzzle ? puzzle.hints.slice(0, hintCount) : [];
+  // Cumulative total across all puzzles — used only for the displayed button counter
+  const totalHintsUsed = Object.values(hintsUsed).reduce((sum, count) => sum + count, 0);
 
   useEffect(() => {
     if (activeInteractableId && !isSolved) {
@@ -178,7 +180,7 @@ export function AlgebraPuzzle() {
                       <Lightbulb size={16} className="text-primary/70" />
                       {t.puzzle.hintButton}
                       <span className="text-xs font-mono text-primary/60">
-                        {hintCount}/{MAX_HINTS}
+                        {totalHintsUsed}/{PUZZLES.length * MAX_HINTS}
                       </span>
                     </button>
                   )}
