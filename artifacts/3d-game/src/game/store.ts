@@ -1,5 +1,6 @@
 import React from 'react';
 import { create } from 'zustand';
+import type { SupportedLocale } from '../i18n';
 
 export type GameState = 'start' | 'playing' | 'escaped';
 
@@ -33,6 +34,10 @@ export interface GameStore {
   isPaused: boolean;
   setPaused: (paused: boolean) => void;
   togglePaused: () => void;
+
+  // Locale
+  locale: SupportedLocale;
+  setLocale: (locale: SupportedLocale) => void;
 }
 
 export const useGameStore = create<GameStore>((set) => ({
@@ -77,6 +82,9 @@ export const useGameStore = create<GameStore>((set) => ({
   isPaused: false,
   setPaused: (paused) => set({ isPaused: paused }),
   togglePaused: () => set((state) => ({ isPaused: !state.isPaused })),
+
+  locale: 'en',
+  setLocale: (locale) => set({ locale }),
 }));
 
 export enum Controls {

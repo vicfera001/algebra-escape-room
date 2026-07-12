@@ -1,6 +1,7 @@
 import React, { useEffect } from 'react';
 import { useGameStore } from '../store';
-import { getPuzzleById } from '../../content/puzzles';
+import { getLocalizedPuzzle } from '../../content/puzzles';
+import { useTranslation } from '../../i18n';
 import { motion, AnimatePresence } from 'framer-motion';
 import { X, CheckCircle2, AlertCircle } from 'lucide-react';
 
@@ -10,11 +11,14 @@ export function AlgebraPuzzle() {
   const addSolvedPuzzle = useGameStore(state => state.addSolvedPuzzle);
   const solvedPuzzles = useGameStore(state => state.solvedPuzzles);
 
+  const { t, locale } = useTranslation();
   const [inputValue, setInputValue] = React.useState('');
   const [errorState, setErrorState] = React.useState(false);
   const inputRef = React.useRef<HTMLInputElement>(null);
 
-  const puzzle = activeInteractableId ? getPuzzleById(activeInteractableId) : null;
+  const puzzle = activeInteractableId
+    ? getLocalizedPuzzle(activeInteractableId, locale)
+    : null;
   const isSolved = puzzle ? solvedPuzzles.includes(puzzle.id) : false;
 
   useEffect(() => {
@@ -81,16 +85,16 @@ export function AlgebraPuzzle() {
                 className="bg-primary/10 border border-primary/30 rounded-xl p-4 flex flex-col items-center gap-2 text-center"
               >
                 <CheckCircle2 className="text-primary w-10 h-10 mb-2" />
-                <p className="text-foreground font-medium">Correct!</p>
+                <p className="text-foreground font-medium">{t.puzzle.correct}</p>
                 <p className="text-muted-foreground text-sm">
-                  Digit revealed:{' '}
+                  {t.puzzle.digitRevealed}:{' '}
                   <span className="text-primary font-bold text-xl">{puzzle.rewardDigit}</span>
                 </p>
                 <button
                   onClick={close}
                   className="mt-4 px-6 py-2 bg-primary text-primary-foreground font-bold rounded-lg w-full"
                 >
-                  Continue
+                  {t.puzzle.continue}
                 </button>
               </motion.div>
             ) : (
@@ -105,7 +109,7 @@ export function AlgebraPuzzle() {
                       type="number"
                       value={inputValue}
                       onChange={(e) => setInputValue(e.target.value)}
-                      placeholder="Enter answer..."
+                      placeholder={t.puzzle.placeholder}
                       className={`w-full bg-background border ${
                         errorState ? 'border-destructive' : 'border-border'
                       } rounded-xl px-4 py-3 text-xl text-center font-mono focus:outline-none focus:border-primary transition-colors`}
@@ -113,7 +117,7 @@ export function AlgebraPuzzle() {
                   </motion.div>
                   {errorState && (
                     <div className="absolute -bottom-6 left-0 w-full text-center text-sm text-destructive flex justify-center items-center gap-1">
-                      <AlertCircle size={14} /> Not quite right.
+                      <AlertCircle size={14} /> {t.puzzle.wrongAnswer}
                     </div>
                   )}
                 </div>
@@ -122,7 +126,7 @@ export function AlgebraPuzzle() {
                   type="submit"
                   className="px-6 py-3 mt-4 bg-primary text-primary-foreground font-bold rounded-xl hover:bg-primary/90 transition-colors shadow-md"
                 >
-                  Submit Answer
+                  {t.puzzle.submit}
                 </button>
               </form>
             )}

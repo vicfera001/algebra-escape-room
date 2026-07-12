@@ -1,7 +1,7 @@
 import React from 'react';
 import { useGameStore } from './store';
+import { useTranslation } from '../i18n';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Crosshair } from 'lucide-react';
 
 export function HUD() {
   const gameState = useGameStore(state => state.gameState);
@@ -9,12 +9,13 @@ export function HUD() {
   const lookingAtObjectId = useGameStore(state => state.lookingAtObjectId);
   const activeInteractableId = useGameStore(state => state.activeInteractableId);
   const solvedPuzzles = useGameStore(state => state.solvedPuzzles);
-  
-  const [timeStr, setTimeStr] = React.useState("00:00");
+
+  const { t } = useTranslation();
+  const [timeStr, setTimeStr] = React.useState('00:00');
 
   React.useEffect(() => {
     if (gameState !== 'playing' || !startTime) return;
-    
+
     const interval = setInterval(() => {
       const now = Date.now();
       const elapsed = Math.floor((now - startTime) / 1000);
@@ -22,14 +23,17 @@ export function HUD() {
       const s = (elapsed % 60).toString().padStart(2, '0');
       setTimeStr(`${m}:${s}`);
     }, 1000);
-    
+
     return () => clearInterval(interval);
   }, [gameState, startTime]);
 
   if (gameState !== 'playing') return null;
-  
-  // Hide HUD center elements if interacting with a puzzle
+
   const isInteracting = activeInteractableId !== null;
+
+  // The interactPrompt translation contains "{key}" as a placeholder for the
+  // keyboard badge. Split on it so we can render <kbd>E</kbd> inline.
+  const promptParts = t.hud.interactPrompt.split('{key}');
 
   return (
     <div className="absolute inset-0 pointer-events-none z-10 flex flex-col justify-between p-6">
@@ -39,10 +43,11 @@ export function HUD() {
             <span>⏱</span> {timeStr}
           </div>
         </div>
-        
+
         <div className="bg-card/80 backdrop-blur-md px-4 py-2 rounded-lg border border-border shadow-lg">
           <div className="text-lg font-bold text-foreground">
-            Clues Found: <span className="text-primary">{solvedPuzzles.length}/3</span>
+            {t.hud.cluesFound}:{' '}
+            <span className="text-primary">{solvedPuzzles.length}/3</span>
           </div>
         </div>
       </div>
@@ -63,7 +68,12 @@ export function HUD() {
               className="bg-card/90 backdrop-blur-md px-6 py-3 rounded-xl border border-primary/30 shadow-[0_0_15px_rgba(251,191,36,0.2)]"
             >
               <p className="text-lg font-medium text-foreground flex items-center gap-2">
-                <span className="text-xl">🔍</span> Press <kbd className="mx-1 px-2 py-0.5 bg-muted rounded border border-border font-mono text-sm">E</kbd> to Interact
+                <span className="text-xl">🔍</span>
+                {promptParts[0]}
+                <kbd className="mx-1 px-2 py-0.5 bg-muted rounded border border-border font-mono text-sm">
+                  E
+                </kbd>
+                {promptParts[1]}
               </p>
             </motion.div>
           )}
