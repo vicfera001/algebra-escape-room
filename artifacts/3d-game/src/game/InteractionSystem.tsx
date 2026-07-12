@@ -32,7 +32,9 @@ export function InteractionSystem({ children }: { children: React.ReactNode }) {
 
   // Raycasting loop
   useFrame(() => {
-    if (gameState !== 'playing' || activeInteractableId !== null) {
+    // Read isPaused imperatively to always get the latest value without
+    // relying on a stale closure from the render cycle.
+    if (gameState !== 'playing' || activeInteractableId !== null || useGameStore.getState().isPaused) {
       if (useGameStore.getState().lookingAtObjectId !== null) {
         setLookingAtObjectId(null);
       }
@@ -70,7 +72,12 @@ export function InteractionSystem({ children }: { children: React.ReactNode }) {
       (pressed) => {
         if (!pressed) return; // Only trigger on key down
         const state = useGameStore.getState();
-        if (state.gameState === 'playing' && state.activeInteractableId === null && state.lookingAtObjectId) {
+        if (
+          state.gameState === 'playing' &&
+          state.activeInteractableId === null &&
+          state.lookingAtObjectId &&
+          !state.isPaused
+        ) {
           setActiveInteractableId(state.lookingAtObjectId);
         }
       }

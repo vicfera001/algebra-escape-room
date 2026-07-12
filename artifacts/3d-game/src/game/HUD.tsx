@@ -10,11 +10,15 @@ export function HUD() {
   const activeInteractableId = useGameStore(state => state.activeInteractableId);
   const solvedPuzzles = useGameStore(state => state.solvedPuzzles);
 
+  const isPaused = useGameStore(state => state.isPaused);
   const { t } = useTranslation();
   const [timeStr, setTimeStr] = React.useState('00:00');
 
   React.useEffect(() => {
-    if (gameState !== 'playing' || !startTime) return;
+    // Stop the interval while paused so the displayed time freezes.
+    // startTime is shifted forward by setPaused(false), so when the interval
+    // resumes it picks up the correct elapsed value without any offset.
+    if (gameState !== 'playing' || !startTime || isPaused) return;
 
     const interval = setInterval(() => {
       const now = Date.now();
@@ -25,7 +29,7 @@ export function HUD() {
     }, 1000);
 
     return () => clearInterval(interval);
-  }, [gameState, startTime]);
+  }, [gameState, startTime, isPaused]);
 
   if (gameState !== 'playing') return null;
 

@@ -50,6 +50,11 @@ export interface Translations {
     enter: string;
     unlocked: string;
   };
+  pause: {
+    title: string;
+    resume: string;
+    restart: string;
+  };
   completion: {
     title: string;
     subtitle: string;
@@ -93,6 +98,11 @@ export const en: Translations = {
     warning: 'Find all 3 digits in the classroom before attempting to unlock.',
     enter: 'ENTER',
     unlocked: 'UNLOCKED',
+  },
+  pause: {
+    title: 'Paused',
+    resume: 'Resume',
+    restart: 'Restart Game',
   },
   completion: {
     title: 'You Escaped!',

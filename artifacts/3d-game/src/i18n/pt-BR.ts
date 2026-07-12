@@ -47,6 +47,11 @@ export const ptBR: Translations = {
     unlocked: "DESBLOQUEADO",
   },
 
+  pause: {
+    title: "Pausado",
+    resume: "Continuar",
+    restart: "Reiniciar Jogo",
+  },
   completion: {
     title: "Você Escapou!",
     subtitle: "Excelente trabalho.",

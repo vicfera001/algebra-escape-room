@@ -32,6 +32,8 @@ export interface GameStore {
 
   // Pause state
   isPaused: boolean;
+  /** Timestamp (ms) when the current pause began; null when not paused. */
+  pausedAt: number | null;
   setPaused: (paused: boolean) => void;
   togglePaused: () => void;
 
@@ -80,8 +82,33 @@ export const useGameStore = create<GameStore>((set) => ({
     })),
 
   isPaused: false,
-  setPaused: (paused) => set({ isPaused: paused }),
-  togglePaused: () => set((state) => ({ isPaused: !state.isPaused })),
+  pausedAt: null,
+  setPaused: (paused) =>
+    set((state) => {
+      if (paused) {
+        return { isPaused: true, pausedAt: Date.now() };
+      }
+      // On resume: shift startTime forward by the duration of the pause so the
+      // elapsed calculation (Date.now() - startTime) excludes paused time.
+      const pausedDuration = state.pausedAt != null ? Date.now() - state.pausedAt : 0;
+      return {
+        isPaused: false,
+        pausedAt: null,
+        startTime: state.startTime != null ? state.startTime + pausedDuration : state.startTime,
+      };
+    }),
+  togglePaused: () =>
+    set((state) => {
+      if (!state.isPaused) {
+        return { isPaused: true, pausedAt: Date.now() };
+      }
+      const pausedDuration = state.pausedAt != null ? Date.now() - state.pausedAt : 0;
+      return {
+        isPaused: false,
+        pausedAt: null,
+        startTime: state.startTime != null ? state.startTime + pausedDuration : state.startTime,
+      };
+    }),
 
   locale: "pt-BR",
   setLocale: (locale) => set({ locale }),

@@ -26,6 +26,7 @@ export function CompletionScreen() {
       hintsUsed: {},
       wrongAttempts: {},
       isPaused: false,
+      pausedAt: null,
       // locale intentionally preserved across replays
     });
   };
