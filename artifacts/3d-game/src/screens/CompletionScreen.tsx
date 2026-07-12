@@ -10,13 +10,16 @@ export function CompletionScreen() {
   const solvedPuzzles = useGameStore(state => state.solvedPuzzles);
 
   const handlePlayAgain = () => {
-    useGameStore.setState({ 
-      gameState: 'start', 
-      startTime: null, 
-      endTime: null, 
+    useGameStore.setState({
+      gameState: 'start',
+      startTime: null,
+      endTime: null,
       solvedPuzzles: [],
       activeInteractableId: null,
-      lookingAtObjectId: null
+      lookingAtObjectId: null,
+      hintsUsed: {},
+      wrongAttempts: {},
+      isPaused: false,
     });
   };
 
