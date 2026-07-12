@@ -35,6 +35,8 @@ export const ptBR: Translations = {
     placeholder: "Digite a resposta...",
     wrongAnswer: "Não é bem isso.",
     submit: "Enviar Resposta",
+    hintButton: "Dica",
+    hintLabel: "Dica {n}",
   },
 
   door: {

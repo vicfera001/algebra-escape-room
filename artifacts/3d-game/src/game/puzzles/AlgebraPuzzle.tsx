@@ -3,13 +3,17 @@ import { useGameStore } from '../store';
 import { getLocalizedPuzzle } from '../../content/puzzles';
 import { useTranslation } from '../../i18n';
 import { motion, AnimatePresence } from 'framer-motion';
-import { X, CheckCircle2, AlertCircle } from 'lucide-react';
+import { X, CheckCircle2, AlertCircle, Lightbulb } from 'lucide-react';
+
+const MAX_HINTS = 3;
 
 export function AlgebraPuzzle() {
   const activeInteractableId = useGameStore(state => state.activeInteractableId);
   const setActiveInteractableId = useGameStore(state => state.setActiveInteractableId);
   const addSolvedPuzzle = useGameStore(state => state.addSolvedPuzzle);
   const solvedPuzzles = useGameStore(state => state.solvedPuzzles);
+  const hintsUsed = useGameStore(state => state.hintsUsed);
+  const incrementHintsUsed = useGameStore(state => state.incrementHintsUsed);
 
   const { t, locale } = useTranslation();
   const [inputValue, setInputValue] = React.useState('');
@@ -20,6 +24,12 @@ export function AlgebraPuzzle() {
     ? getLocalizedPuzzle(activeInteractableId, locale)
     : null;
   const isSolved = puzzle ? solvedPuzzles.includes(puzzle.id) : false;
+
+  // How many hints have already been revealed for this puzzle (persists across open/close)
+  const hintCount = puzzle ? (hintsUsed[puzzle.id] ?? 0) : 0;
+  const canRevealMoreHints = hintCount < MAX_HINTS;
+  // Slice of hint strings the player has earned so far
+  const revealedHints = puzzle ? puzzle.hints.slice(0, hintCount) : [];
 
   useEffect(() => {
     if (activeInteractableId && !isSolved) {
@@ -41,7 +51,6 @@ export function AlgebraPuzzle() {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (isSolved) return;
-
     if (inputValue.trim() === puzzle.correctAnswer) {
       addSolvedPuzzle(puzzle.id);
     } else {
@@ -50,9 +59,19 @@ export function AlgebraPuzzle() {
     }
   };
 
+  const handleHint = () => {
+    if (puzzle && canRevealMoreHints) {
+      incrementHintsUsed(puzzle.id);
+    }
+  };
+
   const close = () => {
     setActiveInteractableId(null);
   };
+
+  // Replace "{n}" placeholder with the hint number
+  const hintLabel = (n: number) =>
+    t.puzzle.hintLabel.replace('{n}', String(n));
 
   return (
     <AnimatePresence>
@@ -74,9 +93,35 @@ export function AlgebraPuzzle() {
             <h2 className="text-2xl font-bold text-primary mb-2">{puzzle.title}</h2>
             <p className="text-muted-foreground mb-6">{puzzle.description}</p>
 
-            <div className="bg-muted rounded-xl p-8 mb-6 flex justify-center border border-border">
+            <div className="bg-muted rounded-xl p-8 mb-4 flex justify-center border border-border">
               <span className="text-4xl font-mono text-foreground font-bold">{puzzle.equation}</span>
             </div>
+
+            {/* Revealed hints — shown whenever at least one hint has been used */}
+            <AnimatePresence initial={false}>
+              {revealedHints.length > 0 && (
+                <motion.div
+                  initial={{ opacity: 0, height: 0 }}
+                  animate={{ opacity: 1, height: 'auto' }}
+                  className="mb-4 flex flex-col gap-2"
+                >
+                  {revealedHints.map((text, i) => (
+                    <motion.div
+                      key={i}
+                      initial={{ opacity: 0, x: -8 }}
+                      animate={{ opacity: 1, x: 0 }}
+                      transition={{ delay: i * 0.05 }}
+                      className="bg-primary/5 border border-primary/20 rounded-lg px-4 py-3"
+                    >
+                      <span className="text-xs font-bold text-primary/70 uppercase tracking-wider block mb-1">
+                        {hintLabel(i + 1)}
+                      </span>
+                      <span className="text-sm text-muted-foreground leading-snug">{text}</span>
+                    </motion.div>
+                  ))}
+                </motion.div>
+              )}
+            </AnimatePresence>
 
             {isSolved ? (
               <motion.div
@@ -122,12 +167,29 @@ export function AlgebraPuzzle() {
                   )}
                 </div>
 
-                <button
-                  type="submit"
-                  className="px-6 py-3 mt-4 bg-primary text-primary-foreground font-bold rounded-xl hover:bg-primary/90 transition-colors shadow-md"
-                >
-                  {t.puzzle.submit}
-                </button>
+                <div className="flex gap-3 mt-4">
+                  {/* Hint button — visible until all 3 hints are revealed */}
+                  {canRevealMoreHints && (
+                    <button
+                      type="button"
+                      onClick={handleHint}
+                      className="flex items-center gap-2 px-4 py-3 bg-muted border border-border text-muted-foreground font-medium rounded-xl hover:border-primary/50 hover:text-foreground transition-colors"
+                    >
+                      <Lightbulb size={16} className="text-primary/70" />
+                      {t.puzzle.hintButton}
+                      <span className="text-xs font-mono text-primary/60">
+                        {hintCount}/{MAX_HINTS}
+                      </span>
+                    </button>
+                  )}
+
+                  <button
+                    type="submit"
+                    className="flex-1 px-6 py-3 bg-primary text-primary-foreground font-bold rounded-xl hover:bg-primary/90 transition-colors shadow-md"
+                  >
+                    {t.puzzle.submit}
+                  </button>
+                </div>
               </form>
             )}
           </div>

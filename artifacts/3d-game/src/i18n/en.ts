@@ -36,6 +36,13 @@ export interface Translations {
     placeholder: string;
     wrongAnswer: string;
     submit: string;
+    /** Button label shown while hints remain available. */
+    hintButton: string;
+    /**
+     * Prefix for each revealed hint row.
+     * Contains "{n}" as a placeholder for the hint number (1, 2, or 3).
+     */
+    hintLabel: string;
   };
   door: {
     title: string;
@@ -77,6 +84,8 @@ export const en: Translations = {
     placeholder: 'Enter answer...',
     wrongAnswer: 'Not quite right.',
     submit: 'Submit Answer',
+    hintButton: 'Hint',
+    hintLabel: 'Hint {n}',
   },
   door: {
     title: 'ELECTRONIC LOCK',
