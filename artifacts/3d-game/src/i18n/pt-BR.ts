@@ -52,6 +52,7 @@ export const ptBR: Translations = {
     subtitle: "Excelente trabalho.",
     timeTaken: "Tempo Usado",
     puzzles: "Enigmas",
+    hintsUsed: "Dicas Usadas",
     playAgain: "Jogar Novamente",
   },
 };

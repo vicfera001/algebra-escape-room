@@ -9,6 +9,9 @@ export function CompletionScreen() {
   const startTime = useGameStore(state => state.startTime);
   const endTime = useGameStore(state => state.endTime);
   const solvedPuzzles = useGameStore(state => state.solvedPuzzles);
+  const hintsUsed = useGameStore(state => state.hintsUsed);
+
+  const totalHintsUsed = Object.values(hintsUsed).reduce((sum, count) => sum + count, 0);
 
   const { t } = useTranslation();
 
@@ -59,7 +62,7 @@ export function CompletionScreen() {
           <p className="text-xl text-primary font-medium mb-10">{t.completion.subtitle}</p>
 
           <div className="bg-muted/50 rounded-xl p-6 text-center mb-10 border border-border/50">
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid grid-cols-3 gap-4">
               <div className="flex flex-col items-center p-3 bg-card rounded-lg border border-border">
                 <span className="text-sm text-muted-foreground uppercase tracking-wider mb-1">
                   {t.completion.timeTaken}
@@ -71,6 +74,12 @@ export function CompletionScreen() {
                   {t.completion.puzzles}
                 </span>
                 <span className="text-3xl font-mono text-primary">{solvedPuzzles.length}/3</span>
+              </div>
+              <div className="flex flex-col items-center p-3 bg-card rounded-lg border border-border">
+                <span className="text-sm text-muted-foreground uppercase tracking-wider mb-1">
+                  {t.completion.hintsUsed}
+                </span>
+                <span className="text-3xl font-mono text-amber-400">{totalHintsUsed}</span>
               </div>
             </div>
           </div>

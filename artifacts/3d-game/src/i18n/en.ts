@@ -55,6 +55,7 @@ export interface Translations {
     subtitle: string;
     timeTaken: string;
     puzzles: string;
+    hintsUsed: string;
     playAgain: string;
   };
 }
@@ -98,6 +99,7 @@ export const en: Translations = {
     subtitle: 'Excellent work.',
     timeTaken: 'Time Taken',
     puzzles: 'Puzzles',
+    hintsUsed: 'Hints Used',
     playAgain: 'Play Again',
   },
 };
