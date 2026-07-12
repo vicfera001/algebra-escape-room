@@ -19,6 +19,7 @@ export interface Translations {
       move: string;
       look: string;
       interact: string;
+      goalLabel: string;
       goal: string;
     };
     button: string;
@@ -60,6 +61,7 @@ export const en: Translations = {
       move: 'Move around the classroom',
       look: 'Look around (Click canvas to lock pointer)',
       interact: 'Interact with highlighted objects',
+      goalLabel: 'Goal',
       goal: 'Solve 3 algebra equations to find the 3-digit door code.',
     },
     button: 'Start Game',

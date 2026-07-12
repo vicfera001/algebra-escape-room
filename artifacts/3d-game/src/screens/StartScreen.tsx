@@ -85,7 +85,7 @@ export function StartScreen() {
                 <span>{t.start.instructions.interact}</span>
               </li>
               <li className="flex items-center gap-3 mt-4 text-primary">
-                <span className="font-bold">Goal:</span>
+                <span className="font-bold">{t.start.instructions.goalLabel}:</span>
                 <span>{t.start.instructions.goal}</span>
               </li>
             </ul>

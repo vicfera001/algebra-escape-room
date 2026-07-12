@@ -1,8 +1,8 @@
-import React from 'react';
-import { create } from 'zustand';
-import type { SupportedLocale } from '../i18n';
+import React from "react";
+import { create } from "zustand";
+import type { SupportedLocale } from "../i18n";
 
-export type GameState = 'start' | 'playing' | 'escaped';
+export type GameState = "start" | "playing" | "escaped";
 
 export interface GameStore {
   gameState: GameState;
@@ -41,7 +41,7 @@ export interface GameStore {
 }
 
 export const useGameStore = create<GameStore>((set) => ({
-  gameState: 'start',
+  gameState: "start",
   setGameState: (state) => set({ gameState: state }),
   startTime: null,
   endTime: null,
@@ -83,14 +83,14 @@ export const useGameStore = create<GameStore>((set) => ({
   setPaused: (paused) => set({ isPaused: paused }),
   togglePaused: () => set((state) => ({ isPaused: !state.isPaused })),
 
-  locale: 'en',
+  locale: "pt-BR",
   setLocale: (locale) => set({ locale }),
 }));
 
 export enum Controls {
-  forward = 'forward',
-  back = 'back',
-  left = 'left',
-  right = 'right',
-  interact = 'interact',
+  forward = "forward",
+  back = "back",
+  left = "left",
+  right = "right",
+  interact = "interact",
 }
